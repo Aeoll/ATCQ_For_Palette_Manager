@@ -40,10 +40,12 @@ async function submit() {
     backend.print("quantizing...");
     const maxColors = document.getElementById("maxcol").value;
     const targetColors = document.getElementById("targetcol").value;
+    const maxiter = document.getElementById("maxiter").value;
+    const disconnects = document.getElementById("disconnects").value;
     const atcq = ATCQ({
       maxColors,
-      disconnects: false,
-      maxIterations: 4,
+      disconnects: disconnects,
+      maxIterations: maxiter,
       progress(t) {
         let pr = Math.floor(t * 100);
         setStatus(

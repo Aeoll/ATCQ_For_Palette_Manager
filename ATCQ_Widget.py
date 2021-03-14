@@ -17,6 +17,8 @@ except:
 from PIL import Image
 import json
 
+import numpy as np
+
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide2 import QtCore
@@ -24,6 +26,13 @@ from PySide2.QtWebEngineWidgets import QWebEngineView
 from PySide2.QtWebChannel import QWebChannel
 
 # Can we use the houdini embedded browser at all? https://www.sidefx.com/docs/houdini/hom/browserpython.html
+
+'''
+TODO
+Cache the quantize result so we can change the target colours without redoing
+improve button layout
+add this stuff to palette manager base
+'''
 
 class ATCQ_Dialog(QDialog):
     def __init__(self, node=None):
@@ -46,7 +55,7 @@ class ATCQ_Dialog(QDialog):
 
         vbox.addWidget(self.webEngineView)
         self.setLayout(vbox)
-        self.setGeometry(200, 200, 600, 300)
+        self.setGeometry(100, 100, 700, 300)
         self.setWindowTitle('ATCQ')
         self.show()
 
@@ -73,7 +82,7 @@ class ATCQ_Dialog(QDialog):
         except:
             im = Image.open(url.urlopen(file))
             print("url image resized")
-        sc = im.resize((300,300))
+        sc = im.resize((350,350))
         write_path = str(self.SCRIPT_PATH.joinpath("atcq_image.png"))
         sc.save(write_path, format="PNG")
         print("resized image")
@@ -109,11 +118,15 @@ class ATCQ_Dialog(QDialog):
     def setPaletteManagerRamp(self):
         ramp = self.node.parm("ramp")
         nodes = len(self.palette)
+
+        wts = self.weights
+        wts.insert(0, 0) # prepend 0 so cumsum gives us the correct positions
+        placements = np.cumsum(wts)
+
         ramp.set(nodes)
         for i in xrange(nodes):
             posParm = self.node.parm(ramp.name() + str(i + 1) + "pos")
-            posParm.set((1.0 * i)/(nodes-1))
-            # use the weights to set positions?
+            posParm.set(placements[i])
 
             # set colours, check if hex or rgb triplet
             v = self.palette[i % len(self.palette)]
