@@ -55,7 +55,9 @@ class ATCQ_Widget(QWidget):
 
     @QtCore.Slot()
     def on_load_finished(self):
-        self.webEngineView.page().runJavaScript('window.defaultImage = {};'.format(str(self.SCRIPT_PATH.joinpath("atcq_image.png"))))
+        p = str(self.SCRIPT_PATH.joinpath("atcq_image.png"))
+        pp = p.replace("\\", "/")
+        self.webEngineView.page().runJavaScript("window.setImagePath('{}');".format(pp))
 
     @QtCore.Slot(str)
     def resize(self, file):
@@ -69,7 +71,7 @@ class ATCQ_Widget(QWidget):
         write_path = str(self.SCRIPT_PATH.joinpath("atcq_image.png"))
         sc.save(write_path, format="PNG")
         print("resized image")
-        self.webEngineView.page().runJavaScript('window.setStatus("Image processed - quantizing:...");')
+        self.webEngineView.page().runJavaScript('window.setStatus("Image processed");')
 
     # https://stackoverflow.com/questions/58210400/how-to-receive-data-from-python-to-js-using-qwebchannel
     # @QtCore.Slot(str) @QtCore.Slot(QJsonValue) @QtCore.Slot("QJsonObject") @QtCore.Slot(list)

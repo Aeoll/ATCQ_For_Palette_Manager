@@ -1,7 +1,7 @@
 const { promisify } = require("util");
 const getPixels = promisify(require("get-pixels"));
 const ATCQ = require("./atcq");
-import "regenerator-runtime/runtime"; //? idk
+import "regenerator-runtime/runtime"; // idk why this is needed to prevent errors
 
 new QWebChannel(qt.webChannelTransport, function (channel) {
   window.backend = channel.objects.atcq;
@@ -9,6 +9,11 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
 
 window.setStatus = (str) => {
   document.getElementById("submit-text").innerHTML = str;
+};
+
+window.setImagePath = (path) => {
+  window.defaultImage = path;
+  backend.print(window.defaultImage);
 };
 
 // this will not work with local files as we cannot get the real filepath? will have to
@@ -23,16 +28,13 @@ async function submit() {
   if (!file) {
     file = "file:///" + window.defaultImage; // use the default image if empty
   }
-//   backend.print(file);
 
   backend.resize(file, async function (y) {
     function setStatus(str) {
       document.getElementById("submit-text").innerHTML = str;
     }
 
-    let f =
-      "file:///C:/Users/NickTR2/Dropbox/1_HOUDINI/04_Plugins/ATCQ_Python/QWebChannel_ATCQ_Test/atcq_image.png";
-    // f = "file:///" + window.defaultImage;
+    let f = "file:///" + window.defaultImage;
     let { data } = await getPixels(f); // load your image data as RGBA array
 
     backend.print("quantizing...");
