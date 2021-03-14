@@ -1,0 +1,29 @@
+{
+  "name": "atcq",
+  "version": "1.0.6",
+  "description": "An implementation of Ant-Tree Color Quantization",
+  "main": "./atcq.js",
+  "author": {
+    "name": "Nick Taylor"
+  },
+  "dependencies": {
+    "disjoint-set": "^1.1.8",
+    "sharp": "^0.27.2"
+  },
+  "devDependencies": {
+    "canvas-sketch": "^0.7.3",
+    "canvas-sketch-cli": "^1.11.7",
+    "canvas-sketch-util": "^1.10.0",
+    "color-space": "^1.16.0",
+    "get-image-pixels": "^1.0.1",
+    "get-pixels": "^3.3.2",
+    "image-q": "^2.1.2",
+    "load-asset": "^1.2.0",
+    "parcel-bundler": "^1.12.4"
+  },
+  "scripts": {
+    "start": "parcel index.js",
+    "dev": "parcel index.js",
+    "build": "parcel index.js"
+  }
+}
