@@ -8,6 +8,12 @@ except:
     from pathlib2 import Path
     import urllib2 as url
 
+try:
+    import hou
+    import toolutils
+except:
+    pass
+
 from PIL import Image
 import json
 
@@ -19,14 +25,14 @@ from PySide2.QtWebChannel import QWebChannel
 
 # Can we use the houdini embedded browser at all? https://www.sidefx.com/docs/houdini/hom/browserpython.html
 
-class ATCQ_Widget(QWidget):
-    def __init__(self):
-        super().__init__()
+class ATCQ_Dialog(QDialog):
+    def __init__(self, node=None):
+        super(ATCQ_Dialog, self).__init__()
         self.SCRIPT_PATH = Path(os.path.realpath(__file__)).parent
+        self.node = node
         self.initUI()
 
-    def initUI(self, node=None):
-        self.node = node
+    def initUI(self):
         QtCore.qInstallMessageHandler(self.handler) # ignore warnings
 
         vbox = QVBoxLayout(self)
@@ -40,7 +46,7 @@ class ATCQ_Widget(QWidget):
 
         vbox.addWidget(self.webEngineView)
         self.setLayout(vbox)
-        self.setGeometry(600, 300, 600, 300)
+        self.setGeometry(200, 200, 600, 300)
         self.setWindowTitle('ATCQ')
         self.show()
 
@@ -77,10 +83,9 @@ class ATCQ_Widget(QWidget):
     # @QtCore.Slot(str) @QtCore.Slot(QJsonValue) @QtCore.Slot("QJsonObject") @QtCore.Slot(list)
     @QtCore.Slot(str, str) # generic json str which we parse
     def send_palette(self, palette, weights):
-        p = json.loads(palette)
-        w = json.loads(weights)
-        print(p)
-        print(w)
+        self.palette = json.loads(palette)
+        self.weights = json.loads(weights)
+        self.setPaletteManagerRamp()
 
     @QtCore.Slot(str)
     def print(self, t):
@@ -90,11 +95,41 @@ class ATCQ_Widget(QWidget):
     def exit(self, a):
         sys.exit()
 
+    '''
+    Setting Ramp on the Palette Manager
+    '''
+
+    def colourConvert(self, col):
+        c = col
+        if (sum(col) / float(len(col)) > 1.0):
+            c = [a / 255.0 for a in col]
+        return tuple(c)
+
+    # process these in the palette manager
+    def setPaletteManagerRamp(self):
+        ramp = self.node.parm("ramp")
+        nodes = len(self.palette)
+        ramp.set(nodes)
+        for i in xrange(nodes):
+            posParm = self.node.parm(ramp.name() + str(i + 1) + "pos")
+            posParm.set((1.0 * i)/(nodes-1))
+            # use the weights to set positions?
+
+            # set colours, check if hex or rgb triplet
+            v = self.palette[i % len(self.palette)]
+            clrParm = self.node.parmTuple(ramp.name() + str(i + 1) + "c")
+            clrParm.set(self.colourConvert(v))
+
+            # set basis to constant
+            basisParm = self.node.parm(ramp.name() + str(i + 1) + "interp")
+            basisParm.set(0)
+
 def main():
     app = QApplication(sys.argv)
-    ex = ATCQ_Widget()
+    ex = ATCQ_Dialog()
     ex.show()
-    sys.exit(app.exec_())
+    app.exec_()
+    # sys.exit(app.exec_())
 
 if __name__ == '__main__':
     main()
