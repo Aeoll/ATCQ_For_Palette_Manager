@@ -8,12 +8,6 @@ except:
     from pathlib2 import Path
     import urllib2 as url
 
-try:
-    import hou
-    import toolutils
-except:
-    pass
-
 from PIL import Image
 import json
 
@@ -25,7 +19,7 @@ from PySide2.QtWebChannel import QWebChannel
 
 # Can we use the houdini embedded browser at all? https://www.sidefx.com/docs/houdini/hom/browserpython.html
 
-class Example(QWidget):
+class ATCQ_Widget(QWidget):
     def __init__(self):
         super().__init__()
         self.SCRIPT_PATH = Path(os.path.realpath(__file__)).parent
@@ -86,12 +80,6 @@ class Example(QWidget):
         print(p)
         print(w)
 
-        # set the houdini ramp
-        # try:
-        #   self.node.parm("ramp")
-        # except:
-        #   print('An exception occurred')
-
     @QtCore.Slot(str)
     def print(self, t):
         print(t)
@@ -102,7 +90,7 @@ class Example(QWidget):
 
 def main():
     app = QApplication(sys.argv)
-    ex = Example()
+    ex = ATCQ_Widget()
     ex.show()
     sys.exit(app.exec_())
 
@@ -110,7 +98,6 @@ if __name__ == '__main__':
     main()
 
 # note on returning values to js without calling js function explicitly?
-
 # https://stackoverflow.com/questions/58210400/how-to-receive-data-from-python-to-js-using-qwebchannel
 # In C++ so that a method can return a value it must be declared as Q_INVOKABLE and the equivalent in PyQt is to use result in the @pyqtSlot decorator:
 # @QtCore.pyqtSlot(int, result=int)
