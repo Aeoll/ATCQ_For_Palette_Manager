@@ -55,7 +55,7 @@ class ATCQ_Dialog(QDialog):
 
         vbox.addWidget(self.webEngineView)
         self.setLayout(vbox)
-        self.setGeometry(100, 100, 700, 300)
+        self.setGeometry(100, 100, 650, 250)
         self.setWindowTitle('ATCQ')
         self.show()
 
@@ -86,7 +86,7 @@ class ATCQ_Dialog(QDialog):
         write_path = str(self.SCRIPT_PATH.joinpath("atcq_image.png"))
         sc.save(write_path, format="PNG")
         print("resized image")
-        self.webEngineView.page().runJavaScript('window.setStatus("Image processed");')
+        self.webEngineView.page().runJavaScript('window.setStatus("Image processed. Quantization will follow...");')
 
     # https://stackoverflow.com/questions/58210400/how-to-receive-data-from-python-to-js-using-qwebchannel
     # @QtCore.Slot(str) @QtCore.Slot(QJsonValue) @QtCore.Slot("QJsonObject") @QtCore.Slot(list)

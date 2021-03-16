@@ -49,14 +49,14 @@ async function submit() {
       progress(t) {
         let pr = Math.floor(t * 100);
         setStatus(
-          "Image Processing Done. Quantizing Colours: " + String(pr) + "%"
+          "Quantizing Colours: " + String(pr) + "%"
         );
       },
     });
     atcq.addData(data);
     await atcq.quantizeAsync();
 
-    setStatus("Quantizing Done - Reducing Palette");
+    setStatus("Quantizing Done - Reducing Target Colour count");
     let cols = [];
     let wts = [];
     const palette = atcq.getWeightedPalette(targetColors).map((p) => {

@@ -9,10 +9,10 @@
     <!-- if this doesnt work in houdini there is a copy in the houdini install? -->
   </head>
   <body>
-    <h2 id="header">Palette Generation with Ant Tree Colour Quantization</h2>
+    <h3 id="header">Palette Generation - Ant Tree Colour Quantization</h2>
     <!-- <form action="actq_submit"> -->
-      <label for="url">Image URL or Local Image Path</label>
-      <input type="url" id="url" name="url" />
+      <label for="url">URL / Local Image Path</label>
+      <input type="url" id="url" name="url" class="inputwide" />
       <button type="submit" class="btn btn-md btn-default" id="submit-url">
         Submit
       </button>
@@ -38,6 +38,7 @@
         step="1"
         value="6"
       />
+      <br />
       <label for="maxiter">Max Iterations:</label>
       <input
         type="number"
@@ -48,7 +49,7 @@
         step="1"
         value="4"
       />
-      <label for="disconnects">Disconnects:</label>
+      <label for="disconnects">Allow Disconnects:</label>
       <input
         type="checkbox"
         id="disconnects"
